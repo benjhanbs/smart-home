@@ -1,31 +1,202 @@
 var xmlHttp;
 
-
 $(document).ready(function()
 {
-  if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+	if (window.XMLHttpRequest) { // Mozilla, Safari, ...
 		xmlHttp = new XMLHttpRequest();
 	} else if (window.ActiveXObject) { // IE 8 and older
 	xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	
-	GetPins();
-	GetTemp();
+	CreateSpeechRecognition();
+	Get2();
 });
 
+//var create_email = false;
+var final_transcript = '';
+var recognizing = false;
+var ignore_onend;
+var start_timestamp;
+var recognition
 
-function ChangeTemp(value)
+function CreateSpeechRecognition()
 {
-	$('#temp-field').html("<H1>Temperature: " + value + "C");
-	//$('#slider-fill').val(value);
-	//$('#slider-fill').slider('refresh');
-	$('#page').page();
-	
+	if (!('webkitSpeechRecognition' in window)) 
+	{
+		alert("You Need To Upgrade Your Browser");
+		//upgrade();
+	} 
+	else 
+	{
+		//start_button.style.display = 'inline-block';
+		recognition = new webkitSpeechRecognition();
+		recognition.continuous = true;
+		recognition.interimResults = true;
+
+		recognition.onstart = 
+		function() 
+		{
+			recognizing = true;
+			//showInfo('info_speak_now');
+			//start_img.src = '/intl/en/chrome/assets/common/images/content/mic-animate.gif';
+		};
+
+		recognition.onerror = 
+		function(event) 
+		{
+			if (event.error == 'no-speech') 
+			{
+				//start_img.src = '/intl/en/chrome/assets/common/images/content/mic.gif';
+				//showInfo('info_no_speech');
+				alert("Error!!! - no-speech");
+				ignore_onend = true;
+			}
+			
+			if (event.error == 'audio-capture') 
+			{
+				//start_img.src = '/intl/en/chrome/assets/common/images/content/mic.gif';
+				//showInfo('info_no_microphone');
+				alert("Error!!! - audio-capture");
+				ignore_onend = true;
+			}
+    
+			if (event.error == 'not-allowed') 
+			{
+				if (event.timeStamp - start_timestamp < 100) 
+				{
+					//showInfo('info_blocked');
+					alert("Error!!! - not-allowed if");
+				} 
+				else 
+				{
+					//showInfo('info_denied');
+					alert("Error!!! - not-allowed else");
+				}
+				ignore_onend = true;
+			}
+			
+		};
+		
+
+		recognition.onend = 
+		function() 
+		{
+			recognizing = false;
+			if (ignore_onend) 
+			{
+				return;
+			}
+			//start_img.src = '/intl/en/chrome/assets/common/images/content/mic.gif';
+			if (!final_transcript) 
+			{
+				alert("final_transcript Is Empty");
+				//showInfo('info_start');
+				return;
+			}
+			//showInfo('');
+			if (window.getSelection) 
+			{
+				alert("window.getSelection = true");
+				//window.getSelection().removeAllRanges();
+				//var range = document.createRange();
+				//range.selectNode(document.getElementById('final_span'));
+				//window.getSelection().addRange(range);
+			}		
+			//if (create_email) Dont Need To Create Email
+			//{
+			//	create_email = false;
+			//	createEmail();
+			//}
+		};
+
+		recognition.onresult = 
+		function(event) 
+		{
+			var interim_transcript = '';
+			if (typeof(event.results) == 'undefined') 
+			{
+				recognition.onend = null;
+				recognition.stop();
+				//upgrade();
+				return;
+			}
+			for (var i = event.resultIndex; i < event.results.length; ++i) 
+			{
+				if (event.results[i].isFinal) 
+				{
+					final_transcript += event.results[i][0].transcript;
+				} 
+				else 
+				{
+					interim_transcript += event.results[i][0].transcript;
+				}
+			}
+			
+			final_transcript = capitalize(final_transcript);
+			final_span.innerHTML = linebreak(final_transcript);
+			interim_span.innerHTML = linebreak(interim_transcript);
+			if (final_transcript || interim_transcript) 
+			{
+				//alert ("final_transcript || interim_transcript");
+				//showButtons('inline-block');
+			}
+		};
+	}
+
+		/*function upgrade() 
+		{
+			start_button.style.visibility = 'hidden';	
+			showInfo('info_upgrade');
+		}
+		*/
 }
+
+var two_line = /\n\n/g;
+var one_line = /\n/g;
+function linebreak(s) 
+{
+	return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
+}
+
+var first_char = /\S/;
+function capitalize(s) 
+{
+	return s.replace(first_char, function(m) 
+	{ 
+		return m.toUpperCase(); 
+	});
+}
+
+function startButton(event) {
+  if (recognizing) 
+  {
+	alert("recognition.stop");
+    recognition.stop();
+    return;
+  }
+  final_transcript = '';
+  recognition.lang = "he-IL";//"en-US";//select_dialect.value;
+  recognition.start();
+  ignore_onend = false;
+  final_span.innerHTML = '';
+  interim_span.innerHTML = '';
+  //start_img.src = '/intl/en/chrome/assets/common/images/content/mic-slash.gif';
+  //showInfo('info_allow');
+  //showButtons('none');
+  start_timestamp = event.timeStamp;
+}
+
+
+
+function CreateAllPins2()
+{
+	Get2();
+}
+
 
 function Send(Pin,Action)
 {
-	var url = "http://192.168.1.120/set?pin"+Pin+"="+Action;
+	var url = "/arduino/set?pin"+Pin+"="+Action;
+	//var url = "http://192.168.1.120/set?pin"+Pin+"="+Action;
 	//var url = "http://192.168.1.120/set?pin31=2";
     xmlHttp.open("GET", url, true);
     xmlHttp.send();
@@ -42,27 +213,11 @@ function Send(Pin,Action)
 			  //alert("Request Lost");
 		 }
 	}
-	//GetTemp();
 }
 
-function GetTemp()
+function Get2()
 {	
-	var url = "http://192.168.1.120/GetTemp?2";
-	$.ajax(
-		{
-			url: url
-		}
-	).done(function(response) 
-	{
-		ChangeTemp(response);
-		//GetTemp();
-		//CreateButtonsHandle5($('#container4'),response);
-	});
-}
-
-function GetPins()
-{	
-	var url = "http://192.168.1.120/";
+	var url = "/arduino";
 	$.ajax(
 		{
 			url: url
@@ -88,7 +243,7 @@ function CreateButtonsHandle5(container,response)
 		ON_OFF_Blink = parts[1];
 		pin = parts[0].split("n");
 		relayid = pin[1];
-		if (relayid<32 || relayid>45)
+		if (relayid < 30 || relayid > 45)
 			continue;
 		switch (ON_OFF_Blink)
 		{
@@ -118,10 +273,6 @@ function CreateButtonsHandle5(container,response)
 
 
 // ----------------------------------------------------------------------
-function CreateAllPins2()
-{
-	Get2();
-}
 function CreateButtonsHandle4(container,relayid,state)
 {
 	switch (state)
@@ -156,7 +307,7 @@ function Get (pin)
 {
 	if (pin == 41) return; 
 	
-	var url = "http://192.168.1.120/get?pin"+pin+"";
+	var url = "/arduino/get?pin"+pin+"";
 	$.ajax(
 		{
 			url: url
