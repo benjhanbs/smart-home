@@ -195,7 +195,7 @@ function CreateAllPins2()
 
 function Send(Pin,Action)
 {
-	var url = "smarthome.myvnc.com/arduino/set?pin"+Pin+"="+Action;
+	var url = "http://smarthome.myvnc.com/arduino/set?pin"+Pin+"="+Action;
 	//var url = "http://192.168.1.120/set?pin"+Pin+"="+Action;
 	//var url = "http://192.168.1.120/set?pin31=2";
     xmlHttp.open("GET", url, true);
@@ -217,7 +217,7 @@ function Send(Pin,Action)
 
 function Get2()
 {	
-	var url = "smarthome.myvnc.com/arduino";
+	var url = "http://smarthome.myvnc.com/arduino";
 	$.ajax(
 		{
 			url: url
