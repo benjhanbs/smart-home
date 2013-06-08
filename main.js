@@ -7,7 +7,7 @@ $(document).ready(function()
 	} else if (window.ActiveXObject) { // IE 8 and older
 	xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	CreateSpeechRecognition();
+	//CreateSpeechRecognition();
 	Get2();
 });
 
@@ -224,7 +224,7 @@ function Get2()
 		}
 	).done(function(response) 
 	{
-		//alert(response);
+		alert(response);
 		CreateButtonsHandle5($('#container4'),response);
 	});
 }
