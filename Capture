@@ -20,6 +20,16 @@ function captureAudioSuccess(mediaFiles) {
     } 
     console.log("captureAudioSuccess");
 }
+
+//api-capture   Capture Audio
+function captureAudio() {
+    $('#format-data').empty();
+    $('#capture-result').empty();
+    navigator.device.capture.captureAudio(captureAudioSuccess, captureError, {limit: 1});
+}
+
+
+/*
 function captureImageSuccess(mediaFiles) {  
     var i, len;
     var formatSuccess = function (mediaFile) {
@@ -47,23 +57,17 @@ function captureVideoSuccess(mediaFiles) {
     } 
     console.log("captureMediaSuccess");
 }
-
-//api-capture   Capture Audio
-function captureAudio() {
-    $('#format-data').empty();
-    $('#capture-result').empty();
-    navigator.device.capture.captureAudio(captureAudioSuccess, captureError, {limit: 1});
-}
-
 // api-capture  Capture Image
 function captureImage(){
     $('#format-data').empty();
     $('#capture-result').empty();
     navigator.device.capture.captureImage(captureImageSuccess, captureError, {limit: 1});    
 }
+
 // api-capture  Capture Video
 function captureVideo(){
     $('#format-data').empty();
     $('#capture-result').empty();
     navigator.device.capture.captureVideo(captureVideoSuccess, captureError, {limit: 1});    
 }
+*/
