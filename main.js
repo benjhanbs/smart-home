@@ -1,5 +1,4 @@
 var xmlHttp;
-var capture;
 
 $(document).ready(function()
 {
@@ -8,7 +7,6 @@ $(document).ready(function()
 	} else if (window.ActiveXObject) { // IE 8 and older
 	xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	var capture = navigator.device.capture;
 	//CreateSpeechRecognition();
 	Get2();
 });
