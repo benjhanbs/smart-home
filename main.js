@@ -167,22 +167,23 @@ function capitalize(s)
 }
 
 function startButton(event) {
-  if (recognizing) 
-  {
-	alert("recognition.stop");
-    recognition.stop();
-    return;
-  }
-  final_transcript = '';
-  recognition.lang = "he-IL";//"en-US";//select_dialect.value;
-  recognition.start();
-  ignore_onend = false;
-  final_span.innerHTML = '';
-  interim_span.innerHTML = '';
-  //start_img.src = '/intl/en/chrome/assets/common/images/content/mic-slash.gif';
-  //showInfo('info_allow');
-  //showButtons('none');
-  start_timestamp = event.timeStamp;
+ //  if (recognizing) 
+ //  {
+	// alert("recognition.stop");
+ //    recognition.stop();
+ //    return;
+ //  }
+ //  final_transcript = '';
+ //  recognition.lang = "he-IL";//"en-US";//select_dialect.value;
+ //  recognition.start();
+ //  ignore_onend = false;
+ //  final_span.innerHTML = '';
+ //  interim_span.innerHTML = '';
+ //  //start_img.src = '/intl/en/chrome/assets/common/images/content/mic-slash.gif';
+ //  //showInfo('info_allow');
+ //  //showButtons('none');
+ //  start_timestamp = event.timeStamp;
+ 	captureAudio();
 }
 
 
