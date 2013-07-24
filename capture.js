@@ -9,6 +9,7 @@ function formatError(error) {
 
 // api-capture
 function captureAudioSuccess(mediaFiles) {  
+    $('#capture-result').html("Capture success");
     var i, len;
     var formatSuccess = function (mediaFile) {
         $('#format-data').append("Duration: <strong>" + mediaFile.duration/1000 + "s</strong><br/>");
@@ -25,6 +26,7 @@ function captureAudioSuccess(mediaFiles) {
 function captureAudio() {
     $('#format-data').empty();
     $('#capture-result').empty();
+    $('#capture-result').html("Starting capture");
 	navigator.device.capture.captureAudio(captureAudioSuccess, captureError, {limit: 1});
-	$('#capture-result').html("<strong>something went wrong</strong>");
+	// $('#capture-result').html("<strong>something went wrong</strong>");
 }
