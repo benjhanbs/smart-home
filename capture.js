@@ -30,3 +30,23 @@ function captureAudio() {
 	navigator.device.capture.captureAudio(captureAudioSuccess, captureError, {limit: 1});
 	// $('#capture-result').html("<strong>something went wrong</strong>");
 }
+
+// Record audio
+//
+function recordAudio() {
+    var src = "myrecording.amr";
+    var mediaRec = new Media(src,
+        // success callback
+        function() {
+            $('#capture-result').html("recordAudio():Audio Success");
+        },
+
+        // error callback
+        function(err) {
+            $('#capture-result').html("recordAudio():Audio Error: "+ err.code);
+        });
+
+    // Record audio
+    mediaRec.startRecord();
+    setTimeout(mediaRec.stopRecord, 5000);
+}
