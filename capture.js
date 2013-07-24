@@ -34,7 +34,7 @@ function captureAudio() {
 // Record audio
 //
 function recordAudio() {
-    var src = "myrecording.amr";
+    var src = "myrecording.flac";
     var mediaRec = new Media(src,
         // success callback
         function() {
@@ -53,4 +53,15 @@ function recordAudio() {
         $('#capture-result').html("Calling stop");
         mediaRec.stopRecord();
     }, 5000);
+}
+
+function recognizeSpeech() {
+    var maxMatches = 5;
+    var promptString = "Speak now"; // optional
+    var language = "en-US";                     // optional
+    window.plugins.speechrecognizer.startRecognize(function(result){
+        $('#capture-result').html(result);
+    }, function(errorMessage){
+        $('#capture-result').html("Error message: " + errorMessage);
+    }, maxMatches, promptString, language);
 }
