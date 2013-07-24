@@ -47,6 +47,10 @@ function recordAudio() {
         });
 
     // Record audio
+    $('#capture-result').html("Calling start");
     mediaRec.startRecord();
-    setTimeout(mediaRec.stopRecord, 5000);
+    setTimeout(function() {
+        $('#capture-result').html("Calling stop");
+        mediaRec.stopRecord();
+    }, 5000);
 }
